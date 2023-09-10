@@ -5,7 +5,7 @@ const connectToDB = () => {
   const NODE_ENV = process.env.NODE_ENV;
   let dbUri = '';
 
-  if(NODE_ENV === 'production') dbUri = process.env.DB_URL;
+  if(NODE_ENV === 'production') dbUri = 'url to remote db';
   else dbUri = 'mongodb://localhost:27017/adsDB';
 
   mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });

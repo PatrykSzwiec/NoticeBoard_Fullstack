@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../utils/authMiddleware');
+const ads = require('../controllers/ads.controller');
+const imageUpload = require('../utils/imageUpload');
 
-const AdsController = require('../controllers/ads.controller');
-
-router.get('/ads', AdsController.getAll);
-router.get('/ads/:id', AdsController.getById);
-router.post('/ads', AdsController.postAll);
-router.put('/ads/:id', AdsController.putById);
-router.delete('/ads/:id', AdsController.deleteById);
+router.get('/ads', ads.getAll);
+router.get('/ads/:id', ads.getById);
+router.get('/ads/search/:searchPhrase', ads.getSearched);
+router.post('/ads', authMiddleware, imageUpload.single('image'), ads.add);
+router.put('/ads/:id', authMiddleware, ads.edit);
+router.delete('/ads/:id', authMiddleware, ads.delete);
 
 module.exports = router;
