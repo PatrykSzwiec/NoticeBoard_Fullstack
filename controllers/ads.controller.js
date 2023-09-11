@@ -5,25 +5,37 @@ const fs = require('fs');
 // Get all ads
 exports.getAll = async (req, res) => {
   try {
+    // Fetch all ads from the database and send them as JSON
     res.json(await Ads.find());
   }
   catch(err) {
+    // Handle any errors that occur during the operation and send a 500 (Internal Server Error) response
     res.status(500).json({ message: err });
   }
 };
 
-// get ad by id 
+// Get an ad by its ID
 exports.getById = async (req, res) => {
   try {
+    // Find an ad in the database by its ID
     const advert = await Ads.findById(req.params.id);
-    if(!advert) res.status(404).json({ message: 'Not found' });
-    else res.json(advert);
+
+    // If the ad is not found, send a 404 (Not Found) response
+    if(!advert){
+    res.status(404).json({ message: 'Not found' });
+    // Send the ad as JSON if it's found
+    } else {
+      // Send the ad as JSON if it's found
+      res.json(advert);
+    }
   }
   catch(err) {
+    // Send the ad as JSON if it's found
     res.status(500).json({ message: err });
   }
 };
 
+// Search for ads by a search phrase
 exports.getSearched = async (req, res) => {
   try {
     const advert = await Ads.find({ searchPhrase: req.params.title });
@@ -40,21 +52,31 @@ exports.add = async (req, res) => {
 
     const { title, content, publishDate, price, location, user } = req.body;
 
+    // Determine the file type of the uploaded image (if present)
     const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
 		if (
-      title && typeof title === 'string' && 
-      content && typeof content === 'string' && 
-      publishDate && typeof publishDate === 'string' && 
+      title && typeof title === 'string' &&
+      content && typeof content === 'string' &&
+      publishDate && typeof publishDate === 'string' &&
       price && typeof price === 'string' &&
-      location && typeof location === 'string' && 
-      user && typeof user === 'string' && 
-      req.file && ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(fileType) 
+      location && typeof location === 'string' &&
+      user && typeof user === 'string' &&
+      req.file && ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(fileType)
       )
     {
-      const newAd = await Ads.create({ title: title, content: content, publishDate: new Date(), price: price, location: location, user: user, image: req.file.filename });
+      const newAd = await Ads.create({
+        title: title,
+        content: content,
+        publishDate: new Date(),
+        price: price,
+        location: location,
+        user: user,
+        image: req.file.filename
+      });
       res.status(201).send({ message: 'New ad added' })
     } else {
       if (req.file) {
+        // If the request is not valid and an image was uploaded, delete the uploaded image
 				fs.unlinkSync(`./public/uploads/${req.file.filename}`);
       res.status(400).send({ message: 'Bad request' });
       }

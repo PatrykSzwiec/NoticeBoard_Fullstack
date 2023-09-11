@@ -1,7 +1,14 @@
+const User = require('../models/user.model');
+const bcrypt = require('bcryptjs');
+const getImageFileType = require('../utils/getImageFileType');
+const fs = require('fs');
+
 exports.register = async (req, res) => {
-	try {	
-		
-		const { login, password, phoneNumber } = req.body;
+	try {
+
+		const { login, password } = req.body;
+		 console.log('Received login:', login);
+    console.log('Received password:', password);
 
 		const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
 		if (login && typeof login === 'string' && password && typeof password === 'string' && req.file && ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(fileType)) {
@@ -12,7 +19,7 @@ exports.register = async (req, res) => {
 				return res.status(409).send({ message: 'User with this login already exists'})
 			}
 
-			const user = await User.create({ login, password: await bcrypt.hash(password, 10), phoneNumber, avatar: req.file.filename });
+			const user = await User.create({ login, password: await bcrypt.hash(password, 10), avatar: req.file.filename });
 			res.status(201).send({ message: 'User created ' + user.login })
 		} else {
 			res.status(400).send({ message: 'Bad request' });
@@ -51,7 +58,12 @@ exports.login = async (req, res) => {
 }
 
 exports.getUser = async (req, res) => {
-	res.send({ message: 'Yeah, I\'m logged'})
+	if (req.session.login) {
+		res.send({ login: req.session.login });
+	}
+	else {
+		res.status(401).send({ message: 'You are not authorized '});
+	}
 };
 
 exports.logout = async (req, res) => {

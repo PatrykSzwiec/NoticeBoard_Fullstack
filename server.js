@@ -9,6 +9,7 @@ const connectToDB = require('./db');
 // start express server
 const app = express();
 
+// Initialize a session with a secret key
 app.use(session({ secret: 'Kodilla' }));
 
 connectToDB();
@@ -22,36 +23,41 @@ if(process.env.NODE_ENV !== 'production') {
     })
   );
 }
+
+// Parse JSON and URL-encoded request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Configure session with a secret key and MongoStore for session management
 app.use(session
   ({ 
-  secret: process.env.SECRET, 
+  secret: 'xyz567', 
   store: MongoStore.create(mongoose.connection), 
   resave: false, 
   saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV == 'production',
-  },
 }));
 
+// Serve static files from specified directories
 app.use(express.static(path.join(__dirname, '/client/build')));
 app.use(express.static(path.join(__dirname, '/public')));
 
-// add routes
+// Define routes
 app.use('/api', require('./routes/ads.routes'));
 app.use('/auth', require('./routes/auth.routes'));
 
-// at any other Link , just server react app
+// For any other route, serve the React app
 app.get('*', (req,res) => {
   res.sendFile(path.join(__dirname + '/client/build/index.html'));
 });
 
+//  Handle 404 (Not Found) errors
 app.use('/', (req, res) => {
   res.status(404).render('notFound');
 });
 
+// Start the server
 const server = app.listen('8000', () => {
   console.log('Server is running on port: 8000');
 });
+
+module.exports = app;

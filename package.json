@@ -4,24 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "test": "set NODE_ENV=test&& mocha \"./{,!(node_modules|client)/**/}*.test.js\"",
+    "test:watch": "onchange \"./**/*.js\" -i -k -- yarn test"
   },
   "author": "Patryk Szwiec",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "bcryptjs": "^2.4.3",
     "express": "4.17.1",
     "express-handlebars": "3.1.0",
     "express-session": "^1.17.3",
-    "connect-mongo": "^5.0.0",
     "mongo-connect": "^0.0.6",
     "mongo-sanitize": "1.0.1",
+    "mongodb": "^5.1.0",
     "mongoo": "^0.3.5",
-    "multer": "1.4.4",
-    "mongodb": "3.3.2",
     "mongoose": "^7.5.0",
-    "nodemon": "^1.19.4"
+    "multer": "1.4.4",
+    "nodemon": "^1.19.4",
+    "chai": "^4.3.8",
+    "chai-http": "^4.4.0",
+    "mocha": "6.2.1"
   }
 }
