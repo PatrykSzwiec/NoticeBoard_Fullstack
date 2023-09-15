@@ -8,7 +8,7 @@ const connectToDB = require('./db');
 
 // start express server
 const app = express();
-
+app.set('view engine', 'ejs');
 // Initialize a session with a secret key
 app.use(session({ secret: 'Kodilla' }));
 
@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 // Define routes
 app.use('/api', require('./routes/ads.routes'));
-app.use('/auth', require('./routes/auth.routes'));
+app.use('/api/auth', require('./routes/auth.routes'));
 
 // For any other route, serve the React app
 app.get('*', (req,res) => {

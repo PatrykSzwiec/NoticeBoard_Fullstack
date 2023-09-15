@@ -67,7 +67,7 @@ exports.add = async (req, res) => {
       const newAd = await Ads.create({
         title: title,
         content: content,
-        publishDate: new Date(),
+        publishDate: publishDate,
         price: price,
         location: location,
         user: user,
