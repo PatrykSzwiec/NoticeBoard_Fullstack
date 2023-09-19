@@ -9,8 +9,7 @@ const connectToDB = require('./db');
 // start express server
 const app = express();
 app.set('view engine', 'ejs');
-// Initialize a session with a secret key
-app.use(session({ secret: 'Kodilla' }));
+app.use(session({ secret: 'anything' }));
 
 connectToDB();
 
@@ -35,7 +34,13 @@ app.use(session
   store: MongoStore.create(mongoose.connection), 
   resave: false, 
   saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV == 'production',
+  },
 }));
+
+// Add a console log to verify session setup
+console.log('Session middleware initialized');
 
 // Serve static files from specified directories
 app.use(express.static(path.join(__dirname, '/client/build')));

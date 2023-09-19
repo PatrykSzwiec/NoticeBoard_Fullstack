@@ -12,6 +12,7 @@ const Login = () => {
   const [status, setStatus] = useState(null); // null, 'loading', 'success', 'serverError', 'clientError'
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -31,7 +32,9 @@ const Login = () => {
       if (res.status === 200) {
         setStatus('success');
         dispatch(logIn({ login }));
-        navigate('/')
+        navigate('/');
+        setIsAuthenticated(true);
+        window.location.reload(); // Reload the page
       } 
       else if (res.status === 400) {
         setStatus('clientError');

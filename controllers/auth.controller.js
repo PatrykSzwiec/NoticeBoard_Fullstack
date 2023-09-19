@@ -33,7 +33,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {	
 		
-		const { login, password, phoneNumber, avatar } = req.body;
+		const { login, password, avatar } = req.body;
 		if (login && typeof login === 'string' && password && typeof password === 'string') {
 			const user = await User.findOne({ login });
 			if (!user) {
@@ -43,6 +43,7 @@ exports.login = async (req, res) => {
 				if (bcrypt.compareSync(password, user.password)) {
 					req.session.login = user.login;
 					res.status(200).send({ message: 'User logged ' + user.login });
+					console.log('User logged in:', user.login);
 				}
 				else {
 				res.status(400).send({ message: 'Login or password are incorrect'});
@@ -59,6 +60,9 @@ exports.login = async (req, res) => {
 
 exports.getUser = async (req, res) => {
 	if (req.session.login) {
+		// Log the session status when fetching the user
+    console.log("Session when fetching user:", req.session);
+
 		res.send({ login: req.session.login });
 	}
 	else {
@@ -68,7 +72,7 @@ exports.getUser = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    req.session.destroy();
+		req.session.destroy();
     res.send('Yeah, You\'ve just logged out');
   } catch (err) {
     res.status(500).send({ message: err.message });
