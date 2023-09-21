@@ -8,29 +8,35 @@ import { API_URL } from "../../config";
 import Spinner from '../common/Spinner';
 import { useNavigate } from "react-router-dom";
 
-const AddForm = props => {
+const AddForm = ({ user }) => {
+  // CHECK THAT USER CORRECTLY PASSING
+  //console.log('User prop:', user);
 
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState(props.title || '');
-  const [content, setContent] = useState(props.content || '');
-  const [price, setPrice] = useState(props.price || '')
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [price, setPrice] = useState('');
   const [publishDate, setPublishDate ] = useState(new Date());
-  const [location, setLocation] = useState(props.location || '');
-  const [image, setImage] = useState(props.photo || null);
+  const [location, setLocation] = useState('');
+  const [image, setImage] = useState(null);
   const [status, setStatus] = useState(null);
 
+  console.log('title,content,price,location', title,content,price,location,user._id,image);
   const handleSubmit = e => {
     e.preventDefault();
-
+    console.log('Sending user._id to server:', user._id);
     const fd = new FormData();
     fd.append('title', title);
     fd.append('content', content);
     fd.append('price', price);
     fd.append('location', location);
     fd.append('image', image);
-    fd.append('user', 'user');
+    fd.append('user', user._id); // Assuming user has an "_id" field
     fd.append('publishDate', publishDate);
+
+    console.log('fd:  ',fd);
+    console.log('User ID:', user._id);
 
     const option = {
       method: 'POST',

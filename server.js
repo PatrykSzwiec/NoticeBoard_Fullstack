@@ -52,7 +52,7 @@ app.use('/api/auth', require('./routes/auth.routes'));
 
 // For any other route, serve the React app
 app.get('*', (req,res) => {
-  res.sendFile(path.join(__dirname + '/client/build/index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 //  Handle 404 (Not Found) errors

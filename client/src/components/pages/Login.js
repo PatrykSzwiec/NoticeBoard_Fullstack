@@ -12,6 +12,7 @@ const Login = () => {
   const [status, setStatus] = useState(null); // null, 'loading', 'success', 'serverError', 'clientError'
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  //eslint-disable-next-line
   const [isAuthenticated, setIsAuthenticated] = useState(false); 
 
   const handleSubmit = e => {

@@ -1,13 +1,13 @@
 import { useDispatch } from "react-redux";
+
 import { updateAds } from "../../redux/adsRedux";
 import { useNavigate } from "react-router-dom";
 import AddForm from "./AddForm";
 
-const AdFormAdd = () => {
-
+const AdFormAdd = ({ user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  
   const handleAdd = ad => {
     navigate("/");
     dispatch(updateAds(ad));
@@ -15,7 +15,7 @@ const AdFormAdd = () => {
 
   return (
     <div>
-      <AddForm actionText="Add new ad" action={handleAdd}/>
+      <AddForm user={user}  actionText="Add new ad" action={handleAdd}/>
     </div>
     
   );

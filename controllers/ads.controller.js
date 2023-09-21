@@ -50,7 +50,10 @@ exports.getSearched = async (req, res) => {
 exports.add = async (req, res) => {
   try {
 
-    const { title, content, publishDate, price, location, user } = req.body;
+    console.log('Received POST request to create ad');
+    console.log('Request Headers:', req.headers);
+    console.log('Request Body:', req.body);
+    const { title, content, publishDate, price, location } = req.body;
 
     // Determine the file type of the uploaded image (if present)
     const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
@@ -60,17 +63,29 @@ exports.add = async (req, res) => {
       publishDate && typeof publishDate === 'string' &&
       price && typeof price === 'string' &&
       location && typeof location === 'string' &&
-      user && typeof user === 'string' &&
       req.file && ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(fileType)
       )
     {
+       // Access the user's login from req.user.login
+       const userLogin = req.user.login;
+
+       // Find the user by username and retrieve their ID
+       const existingUser = await User.findOne({ login: userLogin });
+
+       if (!existingUser) {
+         // If the user doesn't exist, respond with an error
+         res.status(404).json({ message: 'User not found' });
+         return;
+       }
+
+       console.log('User ID:', existingUser._id);
       const newAd = await Ads.create({
         title: title,
         content: content,
         publishDate: publishDate,
         price: price,
         location: location,
-        user: user,
+        user: existingUser._id, // Store the user's ID
         image: req.file.filename
       });
       res.status(201).send({ message: 'New ad added' })
@@ -96,8 +111,30 @@ exports.edit = async (req, res) => {
     const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
     const advert = await Ads.findById(req.params.id);
 
-    if(advert){
-      await Ads.updateOne({ _id: req.params.id }, { $set: { title: title, content: content, publishDate: publishDate, price: price, location: location, user: user, image: req.file }});
+    if (advert) {
+      // Find the user by username and retrieve their ID
+      const existingUser = await User.findOne({ login: user });
+
+      if (!existingUser) {
+        // If the user doesn't exist, respond with an error
+        res.status(404).json({ message: 'User not found' });
+        return;
+      }
+
+      await Ads.updateOne(
+        { _id: req.params.id },
+        {
+          $set: {
+            title: title,
+            content: content,
+            publishDate: publishDate,
+            price: price,
+            location: location,
+            user: existingUser._id, // Store the user's ID
+            image: req.file,
+          },
+        }
+      );
       res.status(201).send({ message: 'Ad updated' });
     }
     else {

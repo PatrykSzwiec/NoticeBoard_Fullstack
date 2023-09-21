@@ -6,6 +6,7 @@ import { NavDropdown } from "react-bootstrap";
 
 const Logout = () => {
   const dispatch = useDispatch();
+  //eslint-disable-next-line
   const [isAuthenticated, setIsAuthenticated] = useState(true); 
 
   const handleLogout = async () => {

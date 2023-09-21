@@ -1,3 +1,4 @@
+const User = require('../models/user.model');
 const mongoose = require('mongoose');
 
 const adsSchema = new mongoose.Schema({
@@ -6,7 +7,7 @@ const adsSchema = new mongoose.Schema({
     publishDate: { type: Date, required: true }, 
     price: { type: Number, required: true },
     location: { type: String, required: true },
-    user: { type: String, required: true, ref: 'User' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     image: { type: String, required: false }
   });
 
