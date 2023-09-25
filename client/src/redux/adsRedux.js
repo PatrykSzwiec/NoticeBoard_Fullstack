@@ -18,15 +18,18 @@ export const removeAd = payload => ({ type: REMOVE_AD, payload });
 export const addAd = payload => ({ type: ADD_AD, payload });
 export const editAd = payload => ({ type: EDIT_AD, payload });
 export const searchAd = (payload) => ({ type: SEARCH_ADS, payload: { payload } });
-export const updateAds = (payload) => ({ type: UPDATE_ADS, payload });
+export const updateAds = (updatedAdData) => ({
+  type: UPDATE_ADS,
+  payload: { ads: updatedAdData }
+  });
 
 export const fetchAds = () => {
   return async (dispatch) => {
     try {
       const response = await fetch(`${API_URL}/ads`);
-
-      dispatch(updateAds(response.data));
-    } catch (error) {
+      const data = await response.json();
+      dispatch(updateAds(data));
+    } catch (error) { 
       console.log(error); 
     }
   };
@@ -43,7 +46,7 @@ const adsReducer = (statePart = [], action) => {
     case SEARCH_ADS:
       return statePart.filter((ad) => ad.title.includes(action.payload));
     case UPDATE_ADS:
-      return [...action.payload];
+      return [...action.payload.ads];
     default:
       return statePart;
   };

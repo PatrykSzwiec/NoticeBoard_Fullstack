@@ -60,8 +60,8 @@ const SingleAd = () => {
               <p>Content: {adData.content}</p>
               <p>Published: {adData.publishDate}</p>
               <h5>Seller data</h5>
-              <Card.Img src={IMAGES_URL + adData.user.avatar} />
-              <p>Login: {adData.user.login}</p>
+              
+              <p>Login: {adData.user}</p>
               <p>Phone number: {adData.user.phone}</p>
             </Card.Body>
           </Card>

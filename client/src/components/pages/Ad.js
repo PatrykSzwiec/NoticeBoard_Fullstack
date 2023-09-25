@@ -1,6 +1,7 @@
 import { Card, Button, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { IMAGES_URL } from "../../config";
+import styles from './Ad.module.scss';
 
 
 const Ad = ({ title, location, image, _id }) => {
@@ -17,7 +18,11 @@ const Ad = ({ title, location, image, _id }) => {
             <Button variant="success">Read more</Button>
           </Link> 
         </Card.Body>
-        <Card.Img variant="top" src={IMAGES_URL + image} />
+        <Card.Img 
+          variant="top" 
+          src={IMAGES_URL + image} 
+          className={styles['ad-image']}
+        />
       </Card>
     </Col>
   );

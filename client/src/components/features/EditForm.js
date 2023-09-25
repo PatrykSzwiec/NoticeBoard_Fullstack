@@ -1,10 +1,12 @@
 import React from 'react';
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import DatePicker from "react-datepicker";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 
-
-const EditForm = ({ action, actionText, ...props }) => {
+const EditForm = ({ action, user, ...props }) => {
 
 	const id = props.id;
 	const [title, setTitle] = useState(props.title || '');
@@ -16,7 +18,7 @@ const EditForm = ({ action, actionText, ...props }) => {
 	
   const handleSubmit = e => {
 		e.preventDefault();
-		action({ title, content, price, publishDate, location, id, image });
+		action({ title, content, price, publishDate, location, id, image, user });
   }
 
   return (
@@ -31,7 +33,7 @@ const EditForm = ({ action, actionText, ...props }) => {
 
 				<Form.Group className="mb-3" controlId="formPassword">
 					<Form.Label>Content if the ad</Form.Label>
-					<Form.Control type="text" as="textarea" rows={5} value={content} onChange={e => setContent(e.target.value)} placeholder="Content" />      
+					<ReactQuill as="textarea" value={content} onChange={setContent} />    
 				</Form.Group>
 
 				<Form.Group className="mb-3" controlId="formPrice">
@@ -41,7 +43,7 @@ const EditForm = ({ action, actionText, ...props }) => {
 
 				<Form.Group className="mb-3" controlId="formDate">
 					<Form.Label>Date</Form.Label>
-					<Form.Control type="date" value={publishDate} onChange={e => setPublishDate(e.target.value)} placeholder="Enter date" />      
+					<DatePicker selected={publishDate} onChange={(date) => setPublishDate(date)} />      
 				</Form.Group>
 
 				<Form.Group className="mb-3" controlId="formLocation">
@@ -51,7 +53,9 @@ const EditForm = ({ action, actionText, ...props }) => {
 
 				<Form.Group className="mb-3" controlId="formPhoto">
 					<Form.Label>Image</Form.Label>
-					<Form.Control type="file" onChange={e => setImage(e.target.files[0])} />      
+					<Form.Control 
+						type="file" 
+						onChange={e => setImage(e.target.files[0])} />      
 				</Form.Group>
 
 				<Button variant="warning" type="submit">Submit</Button>

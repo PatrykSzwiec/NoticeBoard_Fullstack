@@ -69,7 +69,7 @@ exports.getUser = async (req, res) => {
         const userData = { login: user.login, _id: user._id };
         res.send(userData);
       } else {
-        res.status(404).send({ message: 'User not found' });
+        res.status(404).send({ message: '3User not found' });
       }
     } catch (error) {
       console.error('Error fetching user data:', error);

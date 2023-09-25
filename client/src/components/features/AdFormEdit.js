@@ -1,31 +1,38 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAdById, updateAds } from '../../redux/adsRedux';
+import { getAdById, updateAds , fetchAds} from '../../redux/adsRedux';
 import EditForm from "./EditForm";
 import { Navigate } from "react-router-dom";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { API_URL } from "../../config";
 import { Alert } from 'react-bootstrap';
 
-const AdFormEdit = () => {
+const AdFormEdit = ({user}) => {
 
-  const [ status, setStatus] = useState(null)
+  const [ status, setStatus] = useState('');
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const adData = useSelector((state) => getAdById(state, id));
-  console.log(adData)
+  console.log('adData: ',adData);
 
-  const handleEdit = (ad) => {
+  useEffect(() => {
+    return () => {
+      // Clear status when component unmounts
+      setStatus('');
+    };
+  }, []);
+
+  const handleEdit = async (ad) => {
     const fd = new FormData();
     fd.append('title', ad.title);
-    fd.append('description', ad.description);
-    fd.append('date', ad.date);
+    fd.append('content', ad.content);
     fd.append('price', ad.price);
     fd.append('location', ad.location);
     fd.append('image', ad.image);
     fd.append('user', ad.user);
+    fd.append('publishDate', ad.publishDate);
 
     const options = {
       method: 'PUT',
@@ -34,22 +41,25 @@ const AdFormEdit = () => {
     };
 
     fetch(`${API_URL}/ads/${id}`, options)
-      .then((res) => {
-        if (res.status === 201) {
-          setStatus('succes')
-          dispatch(updateAds({ ...adData, id }));
-          setTimeout(() => navigate('/'), 3000);
-        } else if(res.status === 400){
-          setStatus('clientError');
-        } else if(res.status === 401){
-          setStatus('loginError');
-        } else{
-          setStatus('serverError');
-        }
-      })
-      .catch((err) => {
+    .then((res) => {
+      console.log('Response:', res);
+      return res.json();
+    })
+    .then((data) => {
+      console.log('Response data:', data); // Log the response data
+      if (data.message === 'Ad updated') {
+        setStatus('success');
+        fetchAds()(dispatch);
+        console.log('wszystko git');
+        setTimeout(() => navigate('/'), 3000);
+      } else {
         setStatus('serverError');
-      });
+      }
+    })
+    .catch((err) => {
+      setStatus('serverError');
+      console.error('Fetch error:', err);
+    });
   };
 
   
@@ -59,7 +69,7 @@ const AdFormEdit = () => {
       {status === 'success' && (
         <Alert variant="success">
           <Alert.Heading>Success!</Alert.Heading>
-          <p>Your announcement has been successfully added!</p>
+          <p>Your announcement has been successfully edited!</p>
         </Alert>
       )}
 
@@ -79,12 +89,8 @@ const AdFormEdit = () => {
         <EditForm 
           actionText="Edit ad" 
           action={handleEdit} 
-          title={adData.title} 
-          content={adData.content} 
-          price={adData.price} 
-          publishDate={adData.publishDate} 
-          location={adData.location} 
-          login={adData.user.login}/>
+          {...adData}
+          />
       </div>
     );
 };

@@ -1,6 +1,7 @@
 const Ads = require('../models/ads.model');
 const getImageFileType = require('../utils/getImageFileType');
 const fs = require('fs');
+const User = require('../models/user.model');
 
 // Get all ads
 exports.getAll = async (req, res) => {
@@ -31,7 +32,7 @@ exports.getById = async (req, res) => {
   }
   catch(err) {
     // Send the ad as JSON if it's found
-    res.status(500).json({ message: err });
+    res.status(500).json({ message: err.stack });
   }
 };
 
@@ -43,17 +44,15 @@ exports.getSearched = async (req, res) => {
     else res.json(advert);
   }
   catch(err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.stack });
   }
 };
 
 exports.add = async (req, res) => {
   try {
 
-    console.log('Received POST request to create ad');
-    console.log('Request Headers:', req.headers);
-    console.log('Request Body:', req.body);
-    const { title, content, publishDate, price, location } = req.body;
+    const { title, content, publishDate, price, location, user} = req.body;
+    console.log(req.body);
 
     // Determine the file type of the uploaded image (if present)
     const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
@@ -66,15 +65,13 @@ exports.add = async (req, res) => {
       req.file && ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(fileType)
       )
     {
-       // Access the user's login from req.user.login
-       const userLogin = req.user.login;
 
        // Find the user by username and retrieve their ID
-       const existingUser = await User.findOne({ login: userLogin });
+       const existingUser = await User.findOne({ _id: user });
 
        if (!existingUser) {
          // If the user doesn't exist, respond with an error
-         res.status(404).json({ message: 'User not found' });
+         res.status(404).json({ message: '1User not found' });
          return;
        }
 
@@ -85,7 +82,7 @@ exports.add = async (req, res) => {
         publishDate: publishDate,
         price: price,
         location: location,
-        user: existingUser._id, // Store the user's ID
+        user: user, // Store the user's ID
         image: req.file.filename
       });
       res.status(201).send({ message: 'New ad added' })
@@ -98,54 +95,64 @@ exports.add = async (req, res) => {
     }
   } 
   catch(err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.stack });
   }
 };
 
 
 exports.edit = async (req, res) => {
   const { title, content, publishDate, price, location, user } = req.body;
+  const adId = req.params.id;
 
   try {
 
-    const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
-    const advert = await Ads.findById(req.params.id);
+    const advert = await Ads.findById(adId);
 
-    if (advert) {
-      // Find the user by username and retrieve their ID
-      const existingUser = await User.findOne({ login: user });
+    if (!advert) {
+      // If the ad is not found, respond with a 404 status
+      res.status(404).json({ message: 'Ad not found' });
+      return;
+    }
 
-      if (!existingUser) {
-        // If the user doesn't exist, respond with an error
-        res.status(404).json({ message: 'User not found' });
-        return;
+       
+
+      const updateFields = {
+        title: title,
+        content: content,
+        publishDate: publishDate,
+        price: price,
+        location: location,
+        user: user, // Store the user's ID
+      };
+
+      if (req.file) {
+        // Determine the file type of the uploaded image (if present)
+        const fileType = await getImageFileType(req.file);
+
+        if (['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(fileType)) {
+          // Update the image field only if a valid new image is provided
+          updateFields.image = req.file.filename;
+        } else {
+          // Invalid image file type, respond with a bad request status
+          return res.status(400).json({ message: 'Invalid image file type' });
+        }
+
       }
 
       await Ads.updateOne(
-        { _id: req.params.id },
+        { _id: adId },
         {
-          $set: {
-            title: title,
-            content: content,
-            publishDate: publishDate,
-            price: price,
-            location: location,
-            user: existingUser._id, // Store the user's ID
-            image: req.file,
-          },
+          $set: updateFields,
         }
       );
+
       res.status(201).send({ message: 'Ad updated' });
-    }
-    else {
-      res.status(400).send({ message: 'Bad request' });
-      }
     }
   catch(err) {
     if (req.file) {
       fs.unlinkSync(`./client/public/uploads/${req.file.filename}`);
     }
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.stack });
   }
 };
 
@@ -159,6 +166,6 @@ exports.delete = async (req, res) => {
     else res.status(404).json({ message: 'Not found...' });
   }
   catch(err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.stack });
   }
 };
