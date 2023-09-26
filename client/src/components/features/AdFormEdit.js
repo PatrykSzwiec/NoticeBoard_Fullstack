@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAdById, updateAds , fetchAds} from '../../redux/adsRedux';
+import { getAdById , fetchAds} from '../../redux/adsRedux';
 import EditForm from "./EditForm";
 import { Navigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
@@ -50,7 +50,7 @@ const AdFormEdit = ({user}) => {
       if (data.message === 'Ad updated') {
         setStatus('success');
         fetchAds()(dispatch);
-        console.log('wszystko git');
+        console.log('Everything all right!');
         setTimeout(() => navigate('/'), 3000);
       } else {
         setStatus('serverError');

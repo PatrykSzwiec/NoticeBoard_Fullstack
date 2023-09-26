@@ -1,46 +1,49 @@
 /* eslint-disable no-unused-expressions */
 import { useEffect, useState } from 'react';
 import { Row } from "react-bootstrap";
-import { API_URL } from '../../config';
 import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { getAllAds, fetchAds } from '../../redux/adsRedux';
 import Ad from './Ad';
 import Spinner from '../common/Spinner';
-//import { getAllAds } from "../../redux/adsRedux";
-//import { useSelector } from 'react-redux';
-
 
 const SearchResults = () => {
-
-	//const ads = useSelector(getAllAds);
-
-  const searchId = useParams();
+  const { searchPhrase } = useParams();
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-
-
-  const fetchData = async () => {
-    await fetch(`${API_URL}/ads/search/${searchId}`)
-      .then((response) => response.json())
-      .then((res) => {
-        setData(res);
-        setLoading(false);
-      });
-  };
+  const [loading, setLoading] = useState(true);
+  const ads = useSelector(getAllAds);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchData();
-  });
+    // Fetch ads if not already loaded
+    if (ads.length === 0) {
+      dispatch(fetchAds())
+        .then(() => setLoading(false))
+        .catch((error) => {
+          console.error(error);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [dispatch, ads]);
+
+  useEffect(() => {
+    // Filter ads based on the search phrase (case-insensitive)
+    const filteredAds = ads.filter((ad) =>
+      ad.title.toLowerCase().includes(searchPhrase.toLowerCase())
+    );
+    setData(filteredAds);
+  }, [ads, searchPhrase]);
 
   return (
     <div>
-      {data.length === 0 && <h3>Something went wrong. Try again</h3>}
       {loading && <Spinner />}
       {!loading && (
         <div>
           <h2>Searched adds</h2>
           <Row className="justify-content-between">
-            {data.map(ad => <Ad key={ad._id} {...ad} />)}  
+            {data.map(ad => <Ad key={ad._id} {...ad} />)} 
           </Row>
         </div>
       )}

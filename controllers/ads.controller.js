@@ -39,11 +39,10 @@ exports.getById = async (req, res) => {
 // Search for ads by a search phrase
 exports.getSearched = async (req, res) => {
   try {
-    const advert = await Ads.find({ searchPhrase: req.params.title });
-    if(!advert) res.status(404).json({ message: 'Not found' });
-    else res.json(advert);
-  }
-  catch(err) {
+    const { searchPhrase } = req.params;
+    const results = await Ad.fuzzySearch(searchPhrase);
+    res.json(results);
+  } catch (err) {
     res.status(500).json({ message: err.stack });
   }
 };
@@ -99,13 +98,11 @@ exports.add = async (req, res) => {
   }
 };
 
-
 exports.edit = async (req, res) => {
   const { title, content, publishDate, price, location, user } = req.body;
   const adId = req.params.id;
 
   try {
-
     const advert = await Ads.findById(adId);
 
     if (!advert) {
@@ -113,9 +110,6 @@ exports.edit = async (req, res) => {
       res.status(404).json({ message: 'Ad not found' });
       return;
     }
-
-       
-
       const updateFields = {
         title: title,
         content: content,
@@ -156,6 +150,7 @@ exports.edit = async (req, res) => {
   }
 };
 
+// DELETE ADS //
 exports.delete = async (req, res) => {
   try {
     const advert = await Ads.findById(req.params.id);
