@@ -12,6 +12,7 @@ import Register from './components/pages/Register';
 import Logout from './components/pages/Logout';
 import SingleAd from './components/features/SingleAd';
 import RemoveAd from './components/pages/RemoveAd';
+import Profile from './components/pages/Profile';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/ad/search/:searchPhrase" element={<SearchResults />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile/>} />
           <Route path="/logout" element={<Logout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

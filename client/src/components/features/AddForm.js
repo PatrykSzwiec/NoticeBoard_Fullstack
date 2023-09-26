@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 const AddForm = ({ user }) => {
   // CHECK THAT USER CORRECTLY PASSING
-  //console.log('User prop:', user);
+  console.log('User prop:', user);
 
   const navigate = useNavigate();
 

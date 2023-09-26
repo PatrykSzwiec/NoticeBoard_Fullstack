@@ -1,9 +1,11 @@
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { useState } from 'react';
 import { API_URL } from '../../config';
+import { useNavigate } from "react-router-dom";
+
 
 const Register = () => {
-
+  const navigate = useNavigate();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [avatar, setAvatar] = useState(null);
@@ -29,6 +31,7 @@ const Register = () => {
       .then(res => {
         if (res.status === 201) {
           setStatus('success');
+          setTimeout(() => navigate('/'), 3000);
         } 
         else if (res.status === 400) {
           setStatus('clientError');

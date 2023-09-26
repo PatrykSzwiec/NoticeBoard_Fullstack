@@ -88,3 +88,25 @@ exports.logout = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+
+exports.getProfile = async (req, res) => {
+  if (req.session.login) {
+    try {
+      // Find the user in the database based on their login
+      const user = await User.findOne({ login: req.session.login });
+
+      if (user) {
+        // Return the user's profile data, including the avatar
+        const userData = { login: user.login, avatar: user.avatar, _id: user._id };
+        res.send(userData);
+      } else {
+        res.status(404).send({ message: 'User not found' });
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      res.status(500).send({ message: 'Internal Server Error' });
+    }
+  } else {
+    res.status(401).send({ message: 'You are not authorized' });
+  }
+};

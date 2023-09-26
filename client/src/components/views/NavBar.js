@@ -47,12 +47,15 @@ const NavBar = () => {
           <Nav>
           {isAuthenticated ? (
             <NavDropdown title={<><FontAwesomeIcon icon={faUser} /> My Account</>} id="basic-nav-dropdown">
-              <NavDropdown.Item as={NavLink} to="/logout">Profile</NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="/profile">Profile</NavDropdown.Item>
               <NavDropdown.Divider />
               <Logout />
             </NavDropdown>
           ) : (
-            <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+            <>
+              <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+              <Nav.Link as={NavLink} to="/register">Register</Nav.Link>
+            </>
           )}
         </Nav>
         </Navbar>
