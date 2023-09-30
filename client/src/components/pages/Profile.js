@@ -3,7 +3,7 @@
 const Profile = () => {
   return (
     <div>
-      ss
+      There should be profile page! In work 
     </div>
   );
 };
