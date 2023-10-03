@@ -2682,11 +2682,6 @@ mongoo@^0.3.5:
     timely "*"
     underscore "*"
 
-mongoose-fuzzy-search@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/mongoose-fuzzy-search/-/mongoose-fuzzy-search-0.0.4.tgz#320bbedbe851d0868f78197d97da4995731ef424"
-  integrity sha512-OqE88A7KQx3x2bG4kJOyIauvcGXne3S22dQfBbA6JWwcSAhCa7HZqjlQYyL0lINbGfn4NXg/eZvqTzDyqxo8mA==
-
 mongoose-fuzzy-searching@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/mongoose-fuzzy-searching/-/mongoose-fuzzy-searching-2.0.2.tgz#16a25b198591ab41ac00f3a9d15d3328aa7a126c"

@@ -9,7 +9,7 @@ const Register = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [avatar, setAvatar] = useState(null);
-  const [status, setStatus] = useState(null); // null, 'loading', 'success', 'serverError', 'clientError', 'loginError'
+  const [status, setStatus] = useState(null);
 
   const handleSubmit = e => {
     e.preventDefault();

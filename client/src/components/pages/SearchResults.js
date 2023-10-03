@@ -15,7 +15,6 @@ const SearchResults = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Fetch ads if not already loaded
     if (ads.length === 0) {
       dispatch(fetchAds())
         .then(() => setLoading(false))
@@ -29,7 +28,6 @@ const SearchResults = () => {
   }, [dispatch, ads]);
 
   useEffect(() => {
-    // Filter ads based on the search phrase (case-insensitive)
     const filteredAds = ads.filter((ad) =>
       ad.title.toLowerCase().includes(searchPhrase.toLowerCase())
     );

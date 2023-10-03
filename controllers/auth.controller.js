@@ -61,11 +61,9 @@ exports.login = async (req, res) => {
 exports.getUser = async (req, res) => {
 	if (req.session.login) {
 		try {
-      // Find the user in the database based on their login
       const user = await User.findOne({ login: req.session.login });
 
       if (user) {
-        // Include the _id field in the response
         const userData = { login: user.login, _id: user._id };
         res.send(userData);
       } else {
@@ -92,11 +90,9 @@ exports.logout = async (req, res) => {
 exports.getProfile = async (req, res) => {
   if (req.session.login) {
     try {
-      // Find the user in the database based on their login
       const user = await User.findOne({ login: req.session.login });
 
       if (user) {
-        // Return the user's profile data, including the avatar
         const userData = { login: user.login, avatar: user.avatar, _id: user._id };
         res.send(userData);
       } else {

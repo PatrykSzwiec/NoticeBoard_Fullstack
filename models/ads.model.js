@@ -12,7 +12,6 @@ const adsSchema = new mongoose.Schema({
     image: { type: String, required: false }
   });
 
-  // Enable fuzzy searching on the 'title' field
   adsSchema.plugin(fuzzySearch, { fields: [ 'title' ] });
 
   

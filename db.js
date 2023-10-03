@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const connectToDB = () => {
   // connect to DB
-  const NODE_ENV = process.env.NODE_ENV;
-  let dbUri = '';
-
-  if(NODE_ENV === 'production') dbUri = 'url to remote db';
-  else dbUri = 'mongodb://localhost:27017/adsDB';
+  const dbUri = process.env.MONGODB_URL;
 
   mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
   const db = mongoose.connection;

@@ -6,7 +6,6 @@ const Search = () => {
   const [searchPhrase, setSearchPhrase] = useState('');
 
   const handleSearch = () => {
-    // Redirect to the search results page with the search phrase
     window.location.href = `/ad/search/${searchPhrase}`;
   };
   return (
